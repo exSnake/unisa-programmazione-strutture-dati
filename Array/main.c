@@ -1,9 +1,5 @@
-#include <stdlib.h>
-<<<<<<< HEAD
+#include <stdio.h>
 #include "vettore.h"
-=======
-#include <vettore.h>
->>>>>>> 8d6692b7b050e7f083586cda219bfdc8ea65ecd4
 #define MAXELEM 100
 
 void main()

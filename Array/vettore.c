@@ -57,7 +57,8 @@ int ricerca(int a[], int n, int el){
     int trovato = 0;
     while (i < n && a[i] != el)
         i++;
-    return trovato ? i : -1;
+        
+    return i < n ? i : -1;
     //Versione fatta da me
     // for (int i = 0; i < n; i++)
     // {
