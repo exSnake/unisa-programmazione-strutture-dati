@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include "vettore.h"
 
 void input_array(int a[], int n)
 {
@@ -9,6 +11,44 @@ void input_array(int a[], int n)
     }
 
     printf("End\n");
+}
+
+void finput_array(char *file_name, int a[], int n)
+{
+    FILE *fd;
+    //apre il file
+    fd = fopen(file_name, "r");
+    if( fd == NULL ) {
+        printf("Impossibile aprire il file %s\n", file_name);
+    } else {
+        for(int i = 0; i < n; i++){
+            fscanf(fd, "%d", &a[i]);
+        }
+        fclose(fd);
+    }
+}
+
+void foutput_array(char *file_name, int a[], int n)
+{
+    FILE *fd;
+
+    fd = fopen(file_name, "w");
+    if( fd == NULL ) {
+        printf("Impossibile aprire il file %s\n", file_name);
+    } else {
+        for(int i = 0; i < n; i++){
+            fprintf(fd, "%d\n", a[i]);
+        }
+        fclose(fd);
+    }
+}
+
+int confronta_array(int a[], int b[], int n)
+{
+    int i = 0;
+    while(i < n && a[i] == b[i] )
+        i++;
+    return i == n ? 1 : 0;
 }
 
 void stampa_array(int a[], int n){
