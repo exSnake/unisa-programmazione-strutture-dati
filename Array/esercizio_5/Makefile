@@ -8,4 +8,4 @@ vettore.o: vettore.c
 	gcc -c vettore.c
 
 clean: 
-	rm *.o *_output.txt array run_test_ordina_array
+	rm *.o *_output.txt run_test_inserisci
