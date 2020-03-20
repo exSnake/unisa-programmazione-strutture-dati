@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "vettore.h"
+#include "vettore_sort.h"
 #define M 20
 
 int run_test_case(char *test_name, int n);
@@ -32,9 +33,9 @@ int main(int argc, char *argv[])
     while(fscanf(test_suite, "%s %d\n", tc_id, &n) == 2)
     {
         if (run_test_case(tc_id, n))
-            fprintf(result,"%s PASS", tc_id);
+            fprintf(result,"%s PASS\n", tc_id);
         else
-            fprintf(result,"%s FAIL",tc_id);
+            fprintf(result,"%s FAIL\n",tc_id);
     }
     fclose(test_suite);
     fclose(result);
@@ -56,8 +57,8 @@ int run_test_case(char *test_name, int n)
         return -1;
     }
     finput_array(input_fname, a, n);
-    //ordina(a, n);
-    //foutput_array(output_fname, a, n);
+    insertion_sort(a, n);
+    foutput_array(output_fname, a, n);
 
     int *oracle = (int*) calloc(n, sizeof(int));
     if(oracle == NULL) {
