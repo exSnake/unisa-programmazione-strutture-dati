@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "vettore.h"
-#include "vettore_sort.h"
 #define M 20
 
 int run_test_inserisci(char *test_name, int n, int el, int pos);
