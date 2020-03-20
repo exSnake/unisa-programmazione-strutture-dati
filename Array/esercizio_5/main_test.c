@@ -56,7 +56,6 @@ int run_test_inserisci(char *test_name, int n, int el, int pos)
         return -1;
     }
     finput_array(input_fname, a, n);
-    printf("n:%d el:%d pos:%d",n,el,pos);
     inserisci(a, &n, el, pos);
     foutput_array(output_fname, a, n);
 
