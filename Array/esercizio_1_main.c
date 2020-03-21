@@ -1,18 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "vettore.h"
+#include "utility/vettore.h"
+#include "utility/vettore_sort.h"
 #define M 20
 
-int run_test_inserisci(char *test_name, int n, int el, int pos);
+int run_test_case(char *test_name, int n);
 
 int main(int argc, char *argv[])
 {
     FILE *test_suite, *result;
     char tc_id[M];
-    int n, el, pos;
+    int n;
 
-    if(argc < 3) {
+    if(argc < 2) {
         printf("Nomi dei file mancanti \n");
         exit(1);
     }
@@ -20,7 +21,7 @@ int main(int argc, char *argv[])
     //Apre i file test suite in lettura e result in scrittura
 
     test_suite = fopen(argv[1], "r");
-    result = fopen(argv[2], "w");
+    result = fopen("result.txt", "w");
     if( test_suite == NULL || result == NULL) {
         printf("Errore nell'apertura dei file");
         exit(1);
@@ -31,7 +32,7 @@ int main(int argc, char *argv[])
 
     while(fscanf(test_suite, "%s %d\n", tc_id, &n) == 2)
     {
-        if (run_test_inserisci(tc_id, n, el, pos))
+        if (run_test_case(tc_id, n))
             fprintf(result,"%s PASS\n", tc_id);
         else
             fprintf(result,"%s FAIL\n",tc_id);
@@ -40,28 +41,24 @@ int main(int argc, char *argv[])
     fclose(result);
 }
 
-int run_test_inserisci(char *test_name, int n, int el, int pos)
+int run_test_case(char *test_name, int n)
 {
-    char input1_fname[M], input2_fname[M], output_fname[M], oracle_fname[M];
+    char input_fname[M], output_fname[M], oracle_fname[M];
     //static const char INPUT[] = "_input.txt"
     //static const char ORACLE[] = "_oracle.txt"
 
-    sprintf(input1_fname, "%s_input1.txt", test_name);
-    sprintf(input2_fname, "%s_input2.txt", test_name);
+    sprintf(input_fname, "%s_input.txt", test_name);
     sprintf(oracle_fname, "%s_oracle.txt", test_name);
     sprintf(output_fname, "%s_output.txt", test_name);
 
-    int *a = (int*) calloc((n), sizeof(int));
-    int *b = (int*) calloc((n), sizeof(int));
-    int *c = (int*) calloc((n), sizeof(int));
-    if(a == NULL || b == NULL || c == NULL) {
+    int *a = (int*) calloc(n, sizeof(int));
+    if(a == NULL) {
         printf("Memoria insufficiente");
         return -1;
     }
-    finput_array(input1_fname, a, n);
-    finput_array(input2_fname, b, n);
-    somma_array(a,b,c,n);
-    foutput_array(output_fname, c, n);
+    finput_array(input_fname, a, n);
+    insertion_sort(a, n);
+    foutput_array(output_fname, a, n);
 
     int *oracle = (int*) calloc(n, sizeof(int));
     if(oracle == NULL) {
@@ -70,5 +67,5 @@ int run_test_inserisci(char *test_name, int n, int el, int pos)
     }
     finput_array(oracle_fname, oracle, n);
     
-    return confronta_array(c, oracle, n);
+    return confronta_array(a, oracle, n);
 }
