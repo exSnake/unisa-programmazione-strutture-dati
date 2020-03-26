@@ -1,4 +1,4 @@
 *.o
 array
-.settings/
+.settings/*
 .cproject
