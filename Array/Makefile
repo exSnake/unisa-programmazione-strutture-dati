@@ -11,6 +11,9 @@ ES5_EXE=run_test_inserisci.exe
 ES6=esercizio_6
 ES6_EXE=run_test_somma.exe
 
+ES7=esercizio_7
+ES7_EXE=run_test_bubble_sort.exe
+
 all: main.o vettore.o vettore_sort.o
 	gcc main.o vettore.o vettore_sort.o -o array
 
@@ -26,6 +29,9 @@ $(ES5): $(ES5)_main.o vettore.o
 $(ES6): $(ES6)_main.o vettore.o vettore_sort.o
 	gcc $(ES6)_main.o vettore.o vettore_sort.o -o $(ES6)/$(ES6_EXE)
 
+$(ES7): $(ES7)_main.o vettore.o vettore_sort.o
+	gcc $(ES7)_main.o vettore.o vettore_sort.o -o $(ES7)/$(ES7_EXE)
+
 main.o: main.c
 	gcc -c main.c
 
@@ -36,8 +42,9 @@ vettore_sort.o: $(UTILITY)/vettore_sort.c
 	gcc -c $(UTILITY)/vettore_sort.c
 
 clean: 
-	rm *.o array 
-	$(ES1)/*_output.txt $(ES1)/result.txt $(ES1)/*.exe 
-	$(ES3)/*.exe 
-	$(ES5)/*_output.txt $(ES5)/result.txt $(ES5)/*.exe 
-	$(ES6)/*_output.txt $(ES6)/result.txt $(ES6)/*.exe 
+	rm *.o array \
+	$(ES1)/*_output.txt $(ES1)/result.txt $(ES1)/*.exe \
+	$(ES3)/*.exe \
+	$(ES5)/*_output.txt $(ES5)/result.txt $(ES5)/*.exe \
+	$(ES6)/*_output.txt $(ES6)/result.txt $(ES6)/*.exe \
+	$(ES7)/*_output.txt $(ES7)/result.txt $(ES7)/*.exe 

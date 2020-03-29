@@ -43,10 +43,9 @@ void bubble_sort(int a[], int n)
     int swapped = 1;
     while (swapped == 1)
     {
-        swapped == 0;
-        for (int i = 0; i < n; i++)
+        swapped = 0;
+        for (int i = 0; i < (n - 1); i++)
         {
-            printf("%d, %d, %d, %d, %d\n", a[0], a[1], a[2], a[3], a[4] );
             if (a[i] > a[i + 1])
             {
                 scambia(&a[i], &a[i + 1]);
@@ -58,6 +57,6 @@ void bubble_sort(int a[], int n)
 
 void scambia(int *a, int *b){
     int temp = *a;
-    *b = *a;
+    *a = *b;
     *b = temp;
 }
