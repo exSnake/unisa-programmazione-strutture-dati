@@ -7,6 +7,9 @@
 #define BUFFSIZE 100
 
 FILE *Fopen(const char *path, const char *mode);
+/**
+ * Conta il numero di linee in un file e lo lascia aperto
+ */
 int countFileLine(FILE *fp);
 
 /**
@@ -92,30 +95,34 @@ int main(int argc, char *argv[]){
 	char buffer[100];
 	float pr;
 	int an;
-	if (argc < 2){
-		printf("Inserisci il nome del file di input e l'editore da cercare");
+	if (argc < 3){
+		printf("Inserisci il nome del file di input e l'editore da cercare\n");
 		exit(1);
 	}
 
 	fp = Fopen(argv[1], "r");
-	n = countFileLine(fp)/4; //numero libri, ogni 4 linee 1
+	n = countFileLine(fp)/4; //numero libri, ogni 4 linee 1 libro
 	fclose(fp);
 
+	//allochiamo spazio per il numero di libri trovati
 	biblioteca = malloc(sizeof(libro) * (n));
 
+	//riapriamo il file questa volta per la lettura dei libri
 	fp = Fopen(argv[1], "r");
-	while (!feof(fp) && !ferror(fp))
+	//ferror ritorna non 0 se c'e un errore nella lettura
+	while (!feof(fp) && !ferror(fp)) 
 	{
+		//riga n*1 titolo
 		fgets(tit, sizeof(tit), fp);
 		tit[strlen(tit)-1] = '\0';
-
+		//riga n*2 editore
 		fgets(ed, sizeof(ed), fp);
 		ed[strlen(ed) - 1] = '\0';
-
+		//riga n*3 anno
 		fgets(buffer, sizeof(buffer), fp);
 		an = atoi(buffer);
-		buffer[0] = '\0';
-
+		buffer[0] = '\0'; //svuota buffer, non necessario (?)
+		//riga n*4 prezzo
 		fgets(buffer, sizeof(buffer), fp);
 		pr = atof(buffer);
 		buffer[0] = '\0';
@@ -139,8 +146,8 @@ int main(int argc, char *argv[]){
 	}
 	else
 		printf("Nessun libro per questo editore\n");
-
-	int numLibriScont = scontaPerAnno(biblioteca, n, 2000, 10);
+	printLista(biblioteca,n);
+	int numLibriScont = scontaPerAnno(biblioteca, n, 2016, 10);
 	if (numLibriScont == 0)
 	{
 		printf("nessun libro scontato\n");
@@ -161,9 +168,8 @@ int main(int argc, char *argv[]){
 		printLista(prezzosimile, 2);
 	}
 
-	printf("costo totale libri anno 2000: %f\n", costototale(biblioteca, n, 2020));
+	printf("costo totale libri anno 2020: %.2f\n", costototale(biblioteca, n, 2020));
 	printf("end\n");
-	system("PAUSE");
 	return 0;
 }
 
@@ -198,14 +204,14 @@ FILE *Fopen(const char *path, const char *mode)
 void printLista(libro* biblioteca, int n){
 	printf("Lista libri:\n");
 	for (int i = 0; i < n; ++i) {
-		printf("Titolo: %s\nEditore: %s\nPrezzo: %f\nAnno: %d\n\n", titolo(biblioteca[i]),editore(biblioteca[i]),prezzo(biblioteca[i]),anno(biblioteca[i]));
+		printf("Titolo: %s\nEditore: %s\nPrezzo: %.2f\nAnno: %d\n\n", titolo(biblioteca[i]),editore(biblioteca[i]),prezzo(biblioteca[i]),anno(biblioteca[i]));
 	}
 }
 
 libro libropiuvecchio(libro* biblioteca, int n){
 	int tmp = 0;
 	for(int i=1; i<n; i++){
-		if(anno(biblioteca[i]) < anno(biblioteca[i - 1])){
+		if(anno(biblioteca[i]) < anno(biblioteca[tmp])){
 			tmp = i;
 		}
 	}
@@ -215,7 +221,7 @@ libro libropiuvecchio(libro* biblioteca, int n){
 libro libromenocostoso(libro* biblioteca, int n){
 	int tmp = 0;
 	for(int i=1; i<n; i++){
-		if(prezzo(biblioteca[i]) < prezzo(biblioteca[i - 1])){
+		if(prezzo(biblioteca[i]) < prezzo(biblioteca[tmp])){
 			tmp = i;
 		}
 	}
@@ -236,7 +242,7 @@ libro* ricercaeditore(char* ed, libro* biblioteca, int n, int* t){
 	if(trovati == 0)
 		return 0;
 	*t = trovati;
-	libriEditore = malloc(sizeof(libro) * (trovati+1));
+	libriEditore = malloc(sizeof(libriEditore) * (trovati+1));
 	trovati = 0;
 	//secondo ciclo per assegnarli
 	for (int i = 0; i < n; i++)
@@ -255,7 +261,7 @@ int scontaPerAnno(libro* biblioteca, int n, int an, float percentuale){
 	int numLibriScontati = 0;
 	for(int i=0; i<n; i++){
 		if(anno(biblioteca[i]) == an){
-			sconto(&biblioteca[i], percentuale);
+			sconto(biblioteca[i], percentuale);
 			numLibriScontati++;
 		}
 	}
@@ -273,7 +279,8 @@ libro* trovalibriprezzosimile(libro* biblioteca, int n){
 		if(found == 1)
 			break;
 		for(int j=1; i<n; i++){
-			//prezzo libro2 = 50 se >= prezzo libro1 = 40 - 10 (30) e prezzo libro2 = 60 <= prezzo libro1 = 40 + 10 50
+			//prezzo libro2 = 50 se >= prezzo libro1 = 40 - 10 (30) e 
+			//prezzo libro2 = 60 <= prezzo libro1 = 40 + 10 50
 			// 50 >= 30 (si) e 50 <= 50 (si) inserisci
 			if(prezzo(biblioteca[j]) >= (prezzo(biblioteca[i]) - scarto) &&
 				prezzo(biblioteca[i]) <= prezzo(biblioteca[i]) + scarto)

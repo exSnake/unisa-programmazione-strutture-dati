@@ -12,12 +12,12 @@ struct miolibro{
 
 libro creaLibro(char *t, char* e, float p, int a)
 {
-	libro l = malloc(sizeof(*l));
+	libro l = malloc(sizeof(*l)); //alloca spazio per la struttura del libro
 	strcpy(l->titolo, t);
 	strcpy(l->editore, e);
 	l->prezzo = p;
 	l->anno = a;
-	return l;
+	return l; 
 }
 
 char* titolo(libro l)
@@ -40,10 +40,10 @@ float prezzo(libro l)
 	return l->prezzo;
 }
 
-float sconto(libro *l, float percentuale)
+float sconto(libro l, float percentuale)
 {
-	if((*l) != NULL && percentuale > 0){
-		(*l)->prezzo = (*l)->prezzo - ((*l)->prezzo * percentuale/100);
+	if(l != NULL && percentuale > 0){
+		l->prezzo = l->prezzo - (l->prezzo * percentuale/100);
 		return 0;
 	} else {
 		return 1;

@@ -1,11 +1,20 @@
-all: main.o automobile.o
-	gcc main.o automobile.o -o automobile.exe
+CXXFLAGS = -g3 -gdwarf2
+CCFLAGS = -g3 -gdwarf2
+
+all: executable
+
+debug: CXXFLAGS += -DDEBUG -g
+debug: CCFLAGS += -DDEBUG -g
+debug: executable
+
+executable: main.o automobile.o
+	$(CC) -o automobile.exe main.o automobile.o
 
 main.o: main.c
-	gcc -c main.c
+	$(CC) -c main.c
 
 automobile.o: automobile.c
-	gcc -c automobile.c
+	$(CC) -c automobile.c
 
 clean:
 	rm *.o automobile.exe 

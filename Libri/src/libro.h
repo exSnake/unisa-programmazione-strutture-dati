@@ -67,7 +67,7 @@ float prezzo(libro l);
  *    sconto(l,percentuale) -> sconto;
  *
  */
-float sconto(libro *l, float percentuale);
+float sconto(libro l, float percentuale);
 
 
 #endif /* LIBRO_H_ */
