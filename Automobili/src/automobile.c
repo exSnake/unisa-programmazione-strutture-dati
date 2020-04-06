@@ -5,9 +5,9 @@
 
 struct _automobile
 {
-    char* nomeModello[100];
-    char *nomeProduttore[50];
-    char *tipologia[50];
+    char* nomeModello;
+    char *nomeProduttore;
+    char *tipologia;
     float cilindrata;
     statoAutomobile stato;
     float km;
@@ -43,10 +43,18 @@ float prezzo(automobile a){
 }
 
 automobile creaAutomobile(char *modello, char *produttore, char *tipo, statoAutomobile st, float cc, float km, float prz){
-    automobile autom = malloc(sizeof(*autom));
+    automobile autom =(automobile) malloc (sizeof(*autom));
     if (modello == NULL || produttore == NULL || tipo == NULL || st < 0 || st > 2 || cc < 0 || km < 0 || prz < 0 ){
         printf("Parametri errati, impossibile creare l'automobile");
         return NULL;
+    }
+    autom->nomeModello = (char *)calloc(strlen(modello) + 1, sizeof(char));
+    autom->nomeProduttore = (char *)calloc(strlen(produttore) + 1, sizeof(char));
+    autom->tipologia = (char *)calloc(strlen(tipo) + 1, sizeof(char));
+    printf("\nModello: %s", modello);
+    if (autom->nomeModello == NULL || autom->nomeProduttore || autom->tipologia == NULL){
+        printf("Memoria insufficiente");
+        exit(EXIT_FAILURE);
     }
     strcpy(autom->nomeModello, modello);
     strcpy(autom->nomeProduttore, produttore);
