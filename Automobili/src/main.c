@@ -52,7 +52,7 @@ automobile *venditaAuto(automobile *dest, int *size, char *modelloAuto);
  */
 int contaAuto(automobile *automobili, int size, char *param, void* value);
 void printAutomobili(automobile *automobili, int size);
-void ordinaAutomobili(automobile *automobili, int size, int desc);
+void ordinaAutomobili(automobile *automobili, int size);
 
 char *file_name = "automobili.txt";
 
@@ -79,7 +79,7 @@ int main()
             buffer[strlen(buffer) - 1] = '\0';
             venditaAuto(concessionaria,&size,buffer);
         } else if ( choice == 5 ) {
-            ordinaAutomobili(concessionaria,size,1);
+            ordinaAutomobili(concessionaria,size);
         }
     } while (choice != 0);
     free(concessionaria);
@@ -315,12 +315,21 @@ void printAutomobili(automobile *automobili, int size){
     getchar();
 }
 
-void ordinaAutomobili(automobile *automobili, int size, int desc){
-    bubble_sort(automobili,size);
+void ordinaAutomobili(automobile *automobili, int size){
+    int desc = 0;
+    printf("Ordinamento per prezzo. 1.Decrescente, 2.Crescente");
+    scanf("%d",&desc);
+
+    if(desc == 1)
+        bubble_sort(automobili,size, 0);
+    else if(desc == 2)
+        bubble_sort(automobili, size, 1);
+    else
+        return;
+
     printf("Automobili ordinate per prezzo:\n");
-    printAutomobili(automobili, size);
-    printf("\nPremi INVIO per continuare...\n");
     getchar();
+    printAutomobili(automobili, size);
 }
 
 FILE *Fopen(const char *path, const char *mode)
