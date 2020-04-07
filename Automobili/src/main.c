@@ -331,7 +331,7 @@ void ordinaAutomobili(automobile *automobili, int size){
     getchar();
     printAutomobili(automobili, size);
 }
-
+ 
 FILE *Fopen(const char *path, const char *mode)
 {
     FILE *f = fopen(path, mode);
