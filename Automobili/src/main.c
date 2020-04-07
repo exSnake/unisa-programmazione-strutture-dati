@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "automobile.h"
+#include "vettore_sort.h"
 
 /* Esercizio 10 – Concessionaria */
 #define BUFFER_SIZE 1024
@@ -9,15 +10,49 @@
 FILE *Fopen(const char *path, const char *mode);
 int countFileLine(FILE *fp);
 
+/**
+ * scanfAuto: restituisce un ADT di tipo auto dopo averlo acquisito da tastiera
+ */
 automobile scanfAuto();
+/**
+ * printMenu: stampa il menu
+ */
 int printMenu();
+
+/**
+ *  salvaAuto: salva un auto passata in ingresso sul file di riferimento
+ */
 void salvaAuto(automobile a);
+
+/**
+ * salvaConcessionaria: salva la concessionaria di automobile riscrivendo completamente il file
+ */
 void salvaConcessionaria(automobile *a, int size);
+
+/**
+ * caricaDati: carica i dati dal file standard automobili.txt
+ */
 automobile *caricaDati(int *size);
+
+/**
+ * inserisciAuto: accetta in ingresso un array di automobili, la sua dimensione e un auto da 
+ *       aggiungerci e la salva sul file, restituisce la nuova lista di automobili
+ */ 
 automobile *inserisciAuto(automobile *dest,int *size, automobile auto1);
+
+/**
+ * venditaAuto: accetta in ingresso un array di automobili, la sua dimensione e il nome di un modello
+ *          da vendere, se presente elimina il modello dall'array e riscrive il file
+ */
 automobile *venditaAuto(automobile *dest, int *size, char *modelloAuto);
-int contaAuto(automobile *automobili, int size, char *param, float value);
+
+/**
+ * contaAuto: accetta in ingresso un array di automobili, la sua dimensione per indirizzo in modo da aggiornarla
+ *      il parametro di cui contare per 
+ */
+int contaAuto(automobile *automobili, int size, char *param, void* value);
 void printAutomobili(automobile *automobili, int size);
+void ordinaAutomobili(automobile *automobili, int size, int desc);
 
 char *file_name = "automobili.txt";
 
@@ -43,6 +78,8 @@ int main()
             fgets(buffer, BUFFER_SIZE, stdin);
             buffer[strlen(buffer) - 1] = '\0';
             venditaAuto(concessionaria,&size,buffer);
+        } else if ( choice == 5 ) {
+            ordinaAutomobili(concessionaria,size,1);
         }
     } while (choice != 0);
     free(concessionaria);
@@ -55,11 +92,11 @@ int printMenu(){
     do
     {
         system("clear");
-        printf("Fai una scelta:\n\t1.Aggiungi Auto\n\t2.Visualizza Auto\n\t3.Conta Auto\n\t4.Vendi Auto\n\t0.Exit\n");
+        printf("Fai una scelta:\n\t1.Aggiungi Auto\n\t2.Visualizza Auto\n\t3.Conta Auto\n\t4.Vendi Auto\n\t5.Ordina Auto\n\t0.Exit\n");
         fgets(buffer, BUFFER_SIZE, stdin);
         buffer[strlen(buffer) - 1] = '\0'; 
         input = atoi(buffer);
-    } while (input < 0 || input > 4);
+    } while (input < 0 || input > 5);
     free(buffer);
     return input;
 }
@@ -216,29 +253,45 @@ automobile* caricaDati(int *size){
         tmp[i] = creaAutomobile(modello,produttore,tipologia,stato,cc,km,prz);
     }
     fclose(fp);
-    free(modello);;
+    free(modello);
     *size = n;
     return tmp;
 }
 
-int contaAuto(automobile *automobili, int size, char* param, float value){
+int contaAuto(automobile *automobili, int size, char* param, void *value){
     int count = 0;
-
     if (strcmp(param, "km") == 0 || strcmp(param, "kilometri") == 0){
+        float km = *((float *)value);
         for (int i = 0; i < size; i++){
-            if (kilometri(automobili[i]) == value){
+            if (kilometri(automobili[i]) == km){
                 count++;
             }
         }
-    } else if (strcmp(param, "cc") == 0 || strcmp(param, "cilindrata") == 0){
+    } else if (strcmp(param, "cc") == 0 || strcmp(param, "cilindrata") == 0) {
+        float cc = *((float *)value);
         for (int i = 0; i < size; i++){
-            if (cilindrata(automobili[i]) == value){
+            if (cilindrata(automobili[i]) == cc){
                 count++;
             }
         }
     } else if (strcmp(param, "prz") == 0 || strcmp(param, "prezzo") == 0) {
+        float prz = *((float *)value);
         for (int i = 0; i < size; i++){
-            if (prezzo(automobili[i]) == value){
+            if (prezzo(automobili[i]) == prz){
+                count++;
+            }
+        }
+    } else if(strcmp(param, "mod") == 0 || strcmp(param, "modello") == 0){
+        char *mod = (char *)value;
+        for (int i = 0; i < size; i++){
+            if (strcmp(mod,modello(automobili[i]))){
+                count++;
+            }
+        }
+    } else if(strcmp(param, "tipo") == 0 || strcmp(param, "tipologia") == 0){
+        char *tp = (char *)value;
+        for (int i = 0; i < size; i++){
+            if (strcmp(tp,tipologia(automobili[i]))){
                 count++;
             }
         }
@@ -251,8 +304,21 @@ void printAutomobili(automobile *automobili, int size){
     printf("Lista %d Automobili:\n", size);
     for (int i = 0; i < size; i++)
     {
-        printf("%s-%s-%s-%d-%f-%f-%f\n", modello(automobili[i]), produttore(automobili[i]), tipologia(automobili[i]), stato(automobili[i]), cilindrata(automobili[i]), kilometri(automobili[i]), prezzo(automobili[i]));
+        if (stato(automobili[i]) == 0)
+            printf("%s - %s (Nuova)\n\tTipo:%s Cilindrata: %.2f Km: %.2f Prezzo: €%.2f\n", modello(automobili[i]), produttore(automobili[i]), tipologia(automobili[i]), cilindrata(automobili[i]), kilometri(automobili[i]), prezzo(automobili[i]));
+        else if (stato(automobili[i]) == 1)
+            printf("%s - %s (Usata KM0)\n\tTipo:%s Cilindrata: %.2f Km: %.2f Prezzo: €%.2f\n", modello(automobili[i]), produttore(automobili[i]), tipologia(automobili[i]), cilindrata(automobili[i]), kilometri(automobili[i]), prezzo(automobili[i]));
+        else if (stato(automobili[i]) == 2)
+            printf("%s - %s (Usata)\n\tTipo:%s Cilindrata: %.2f Km: %.2f Prezzo: €%.2f\n", modello(automobili[i]), produttore(automobili[i]), tipologia(automobili[i]), cilindrata(automobili[i]), kilometri(automobili[i]), prezzo(automobili[i]));
     }
+    printf("\nPremi INVIO per continuare...\n");
+    getchar();
+}
+
+void ordinaAutomobili(automobile *automobili, int size, int desc){
+    bubble_sort(automobili,size);
+    printf("Automobili ordinate per prezzo:\n");
+    printAutomobili(automobili, size);
     printf("\nPremi INVIO per continuare...\n");
     getchar();
 }
