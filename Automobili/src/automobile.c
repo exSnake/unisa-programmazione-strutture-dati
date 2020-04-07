@@ -51,8 +51,7 @@ automobile creaAutomobile(char *modello, char *produttore, char *tipo, statoAuto
     autom->nomeModello = (char *)calloc(strlen(modello) + 1, sizeof(char));
     autom->nomeProduttore = (char *)calloc(strlen(produttore) + 1, sizeof(char));
     autom->tipologia = (char *)calloc(strlen(tipo) + 1, sizeof(char));
-    printf("\nModello: %s", modello);
-    if (autom->nomeModello == NULL || autom->nomeProduttore || autom->tipologia == NULL){
+    if (autom->nomeModello == NULL || autom->nomeProduttore == NULL || autom->tipologia == NULL){
         printf("Memoria insufficiente");
         exit(EXIT_FAILURE);
     }

@@ -1,5 +1,5 @@
 CXXFLAGS = -g3 -gdwarf2
-CCFLAGS = -g3 -gdwarf2
+CCFLAGS = -g3 -gdwarf-2
 
 all: executable
 
@@ -8,7 +8,7 @@ debug: CCFLAGS += -DDEBUG -g
 debug: executable
 
 executable: main.o automobile.o
-	$(CC) -o automobile.exe main.o automobile.o
+	$(CC) $(CCFLAGS) -o automobile.exe main.o automobile.o
 
 main.o: main.c
 	$(CC) -c main.c

@@ -12,10 +12,14 @@ int countFileLine(FILE *fp);
 automobile scanfAuto();
 int printMenu();
 void salvaAuto(automobile a);
-automobile* caricaDati(int *size);
-void inserisciAuto(automobile *dest,int *size, automobile auto1);
+void salvaConcessionaria(automobile *a, int size);
+automobile *caricaDati(int *size);
+automobile *inserisciAuto(automobile *dest,int *size, automobile auto1);
+automobile *venditaAuto(automobile *dest, int *size, char *modelloAuto);
 int contaAuto(automobile *automobili, int size, char *param, float value);
 void printAutomobili(automobile *automobili, int size);
+
+char *file_name = "automobili.txt";
 
 int main()
 {
@@ -29,12 +33,17 @@ int main()
         if (choice == 1)
         {
             automobile a = scanfAuto();
-            inserisciAuto(concessionaria, &size, a);
+            concessionaria = inserisciAuto(concessionaria, &size, a);
         } else if ( choice == 2) {
             printAutomobili(concessionaria,size);
-            getchar();
+        } else if ( choice == 4 ) {
+            char *buffer;
+            buffer = (char *)malloc(BUFFER_SIZE);
+            printf("Quale auto vuoi vendere?\n");
+            fgets(buffer, BUFFER_SIZE, stdin);
+            buffer[strlen(buffer) - 1] = '\0';
+            venditaAuto(concessionaria,&size,buffer);
         }
-        
     } while (choice != 0);
     free(concessionaria);
     return 0;
@@ -45,12 +54,12 @@ int printMenu(){
     char *buffer = (char *) malloc(BUFFER_SIZE);
     do
     {
-        //system("clear");
-        printf("Fai una scelta:\n\t1.Aggiungi Auto\n\t2.Visualizza Auto\n\t3.Conta Auto\n\t0.Exit\n");
+        system("clear");
+        printf("Fai una scelta:\n\t1.Aggiungi Auto\n\t2.Visualizza Auto\n\t3.Conta Auto\n\t4.Vendi Auto\n\t0.Exit\n");
         fgets(buffer, BUFFER_SIZE, stdin);
         buffer[strlen(buffer) - 1] = '\0'; 
         input = atoi(buffer);
-    } while (input < 0 || input > 3);
+    } while (input < 0 || input > 4);
     free(buffer);
     return input;
 }
@@ -107,57 +116,107 @@ automobile scanfAuto(){
     return creaAutomobile(mod,prod,tip,st,cc,km,prz);
 }
 
-void inserisciAuto(automobile *dest,int *size, automobile auto1){
+automobile *inserisciAuto(automobile *dest,int *size, automobile auto1){
     (*size)++;
-    dest = (automobile *)realloc(dest, sizeof(automobile *) * (*size));
+    dest = realloc(dest, sizeof(automobile *) * (*size));
     salvaAuto(auto1);
-    dest[(*size)] = auto1;
-}  
+    dest[(*size)-1] = auto1;
+    printAutomobili(dest,*size);
+    return dest;
+}
+
+automobile *venditaAuto(automobile *automobili, int *size, char *modelloAuto)
+{
+    int pos = -1;
+    //scorriamo tutte le automobili
+    for(int i = 0; i < *size; i++){
+        //controlliamo se il modello e' lo stesso
+        if (strcmp(modelloAuto, modello(automobili[i])) == 0)
+        {
+            //se il modello e' lo stesso controlliamo se in precedenza abbiamo trovato un altro modello uguale
+            if(pos == -1){
+                //se non l'abbiamo trovato, questo verra indicati come il candidato ad essere venduto
+                pos = i;
+            } else {
+                //se c'era gia un modello uguale, controlliamo se il prezzo del nuovo e' minore del precedente candidato
+                if( prezzo(automobili[i])<prezzo(automobili[pos]) ){
+                    //se e' vero, questo sara il nostro nuovo candidato ad essere venduto
+                    pos = i;
+                }
+            }
+        }
+    }
+    if (pos != -1){
+        printf("Venduta l'auto %s al prezzo di %.2f\n", modello(automobili[pos]), prezzo(automobili[pos]));
+        for(int i = pos; i < ((*size)-1); i++){
+            automobili[i] = automobili[i+1];
+        }
+        automobili[*size] = NULL;
+        (*size)--;
+        salvaConcessionaria(automobili,*size);
+    } else {
+         printf("Non c'e' nessuna %s da vendere\n", modelloAuto);
+    }
+    printf("\nPremi INVIO per continuare...\n");
+    getchar();
+    return automobili;
+}
 
 void salvaAuto(automobile a){
-    FILE* fp = Fopen("automobili.txt", "a");
-    fprintf(fp,"%s-%s-%s-%d-%f-%f-%f\n",modello(a),produttore(a),tipologia(a),stato(a),cilindrata(a),kilometri(a),prezzo(a));
+    FILE *fp = Fopen(file_name, "a");
+    fprintf(fp,"%s#%s#%s#%d#%.2f#%.2f#%.2f\n",modello(a),produttore(a),tipologia(a),stato(a),cilindrata(a),kilometri(a),prezzo(a));
+    fclose(fp);
+}
+
+void salvaConcessionaria(automobile *a, int size){
+    FILE *fp = Fopen(file_name, "w");
+    for (int i = 0; i < size; i++)
+    {
+        fprintf(fp, "%s#%s#%s#%d#%.2f#%.2f#%.2f\n", modello(a[i]), produttore(a[i]), tipologia(a[i]), stato(a[i]), cilindrata(a[i]), kilometri(a[i]), prezzo(a[i]));
+    }
     fclose(fp);
 }
 
 automobile* caricaDati(int *size){
     automobile *tmp;
-    char line_data[1024];
+    char *line_data;
     char *modello;
     char *produttore;
     char *tipologia;
     int stato;
     float cc, km, prz;
     int n = 0;
-    FILE *fp = Fopen("automobili.txt", "r");
+    FILE *fp = Fopen(file_name, "r");
     n = countFileLine(fp) - 1; //last newline;
-    printf("n:%d", n);
+    printf("Caricate %d auto\n", n);
     fclose(fp);
     if(n == 0){
         printf("Niente da caricare");
         return NULL;
     }
-    
-    fp = Fopen("automobili.txt", "r");
+
+    fp = Fopen(file_name, "r");
     tmp = (automobile *) malloc(sizeof(tmp) * (n));
     if (tmp == NULL)
     {
         printf("Memoria insufficiente");
         exit(EXIT_FAILURE);
     }
-    
+    line_data = malloc(sizeof(char) * BUFFER_SIZE);
     for(int i = 0; i < n; i++){
-        fgets(line_data, 1024, fp);
-        modello = strtok(line_data, "-");
-        produttore = strtok(NULL, "-");
-        tipologia = strtok(NULL, "-");
-        stato = atoi(strtok(NULL, "-"));
-        cc = atof(strtok(NULL, "-"));
-        km = atof(strtok(NULL, "-"));
-        prz = atof(strtok(NULL, "-"));
+        fgets(line_data, BUFFER_SIZE, fp);
+        line_data[strlen(line_data)-1] = '\0';
+        modello = strtok(line_data, "#");
+        produttore = strtok(NULL, "#");
+        tipologia = strtok(NULL, "#");
+        stato = atoi(strtok(NULL, "#"));
+        cc = atof(strtok(NULL, "#"));
+        km = atof(strtok(NULL, "#"));
+        prz = atof(strtok(NULL, "#"));
         tmp[i] = creaAutomobile(modello,produttore,tipologia,stato,cc,km,prz);
     }
     fclose(fp);
+    free(modello);;
     *size = n;
     return tmp;
 }
@@ -194,6 +253,8 @@ void printAutomobili(automobile *automobili, int size){
     {
         printf("%s-%s-%s-%d-%f-%f-%f\n", modello(automobili[i]), produttore(automobili[i]), tipologia(automobili[i]), stato(automobili[i]), cilindrata(automobili[i]), kilometri(automobili[i]), prezzo(automobili[i]));
     }
+    printf("\nPremi INVIO per continuare...\n");
+    getchar();
 }
 
 FILE *Fopen(const char *path, const char *mode)
