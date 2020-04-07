@@ -38,7 +38,7 @@ void shift_destra(int a[], int h, int k)
         a[i + 1] = a[i];
 }
 
-void bubble_sort(automobile *a, int n)
+void bubble_sort(automobile *a, int n, int desc)
 {
     int swapped = 1;
     while (swapped == 1)
@@ -46,10 +46,18 @@ void bubble_sort(automobile *a, int n)
         swapped = 0;
         for (int i = 0; i < (n - 1); i++)
         {
-            if (prezzo(a[i]) > prezzo(a[i + 1]))
-            {
-                scambia(&a[i], &a[i + 1]);
-                swapped = 1;
+            if(desc == 1){
+                if ( prezzo(a[i]) > prezzo(a[i + 1]) )
+                {
+                    scambia(&a[i], &a[i + 1]);
+                    swapped = 1;
+                }
+            } else {
+                if (prezzo(a[i]) < prezzo(a[i + 1]))
+                {
+                    scambia(&a[i], &a[i + 1]);
+                    swapped = 1;
+                }
             }
         }
     }

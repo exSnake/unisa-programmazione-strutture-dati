@@ -8,6 +8,6 @@ void shift_destra(int a[], int h, int k);
 void insertion_sort(int a[], int n);
 
 void scambia(automobile *a, automobile *b);
-void bubble_sort(automobile *a, int n);
+void bubble_sort(automobile *a, int n, int desc);
 
 #endif
