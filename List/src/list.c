@@ -45,7 +45,7 @@ int cons_list(item elem, list l)
 list tail_list(list l){
 	//Controlla che la lista non sia vuota e che l'elemento successivo
 	//che associeremo alla testa della lista, non sia null
-	if(!empty_list(l) && l->first->next != NULL){
+	if(!empty_list(l)){
 		l->first = l->first->next;
 		l->size--;
 	}
@@ -108,4 +108,19 @@ void output_list(list l){
 		output_item(tmp->itm);
 		tmp = tmp->next;
 	}
+}
+
+list clone_list(list l){
+	list cloned_list = new_list();
+	struct node *tmp = l->first;
+	int size_tmp = l->size;
+
+	while (!empty_list(l)){
+		cons_list(l->first->itm, cloned_list);
+		l = tail_list(l);
+	}
+	cloned_list = reverse_list(cloned_list);
+	l->first = tmp;
+	l->size = size_tmp;
+	return cloned_list;
 }

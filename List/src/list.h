@@ -124,4 +124,6 @@ list reverse_list(list l);
  */
 void output_list(list l);
 
+list clone_list(list l);
+
 #endif /* LIST_H_ */

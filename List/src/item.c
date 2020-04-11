@@ -8,18 +8,19 @@
  */
 
 int eq(item x, item y){
-	return x == y;
+	return (ascissa(x) == ascissa(y) && 
+			ordinata(x) == ordinata(y));
 }
 
-item new_item(int i){
-	return i;
+item new_item(float x, float y){
+	return crea_punto(x,y);
 }
 
 void input_item(item *x){
-	printf("Inserisci un numero\n");
-	scanf("%d", x);
+	item p = crea_punto_stdio();
+	x = &p;
 }
 
 void output_item(item x){
-	printf("Intero: %d\n", x);
+	print_punto(x);
 }
