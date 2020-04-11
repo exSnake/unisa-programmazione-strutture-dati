@@ -3,29 +3,26 @@
 #include "list.h"
 
 int main(){
-	int n = 0;
-	int i = 0;
-	list head;
-	printf("Inserisci il numero di liste da creare\n");
-	scanf("%d", &n);
+	item itm;
+	list l = new_list();
+	if(l == NULL)
+		exit(EXIT_FAILURE);
 
-
-	head = newList();
-	list tmp = head;
-	while(i < n){
-		int val = 0;
-		printf("Inserisci l'elemento n: %d\n", (i + 1) );
-		scanf("%d", &val);
-		tmp = consList(val,tmp);
-		i++;
+	for(int i = 0; i < 112; (i = i + 11)){
+		item j = new_item(i);
+		if(cons_list(j, l) == 0)
+			exit(EXIT_FAILURE);
 	}
 
-	printf("First: %d\n", getFirst(tmp));
-	output_list(tmp);
-	printf("Lista dalla coda:\n");
-	output_list(tailList(tmp));
-	printf("Dimensione lista: %d\n", sizeList(tmp));
-
-	system("PAUSE");
-	return EXIT_SUCCESS;
+	output_list(l);
+	itm = new_item(55);
+	int pos = pos_item(l,itm);
+	printf("Cerco: "); output_item(itm);
+	printf(pos == -1 ? " non trovato\n" : " e' in posizione %d\n", pos);
+	itm = new_item(25);
+	pos = pos_item(l,itm);
+	printf("Cerco: "); output_item(itm);
+	printf(pos == -1 ? " non trovato\n" : " e' in posizione %d\n",pos);
+	list l1 = reverse_list(l);
+	output_list(l1);
 }

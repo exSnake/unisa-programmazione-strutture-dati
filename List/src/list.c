@@ -3,57 +3,109 @@
 #include "list.h"
 #include "item.h"
 
-struct node {
+struct c_list{
+	struct node *first;
+	int size;
+};
+
+struct node{
 	item itm;
 	struct node *next;
 };
 
-list newList(void){
-	return NULL;
-}
-
-int emptyList(list l){
-	return l == NULL;
-}
-
-list tailList(list l){
-	if(!emptyList(l) && l->next != NULL){
-		return l->next;
+list new_list(void){
+	struct c_list *l = malloc(sizeof(struct c_list));
+	if(l != NULL){
+		l->size = 0;
+		l->first = NULL;
 	}
-	return NULL;
+	return l;
 }
 
-list consList(item elem, list l){
-	struct node *newItem;
-	newItem = (struct node*)malloc(sizeof(struct node));
-	if(newItem != NULL){
+int empty_list(list l){
+	return l->size == 0;
+}
+
+int cons_list(item elem, list l)
+{
+	struct node *newItem = malloc(sizeof(struct node));
+	if (newItem != NULL)
+	{
 		newItem->itm = elem;
-		newItem->next = l;
+		newItem->next = l->first;
+		l->first = newItem;
+		l->size++;
+	} else {
+		printf("memoria insufficiente, la lista e' rimasta invariata");
+		return 0;
 	}
-	return newItem;
+	return 1;
 }
 
-item getFirst(list l){
-	if(!emptyList(l)){
-		return l->itm;
+list tail_list(list l){
+	//Controlla che la lista non sia vuota e che l'elemento successivo
+	//che associeremo alla testa della lista, non sia null
+	if(!empty_list(l) && l->first->next != NULL){
+		l->first = l->first->next;
+		l->size--;
+	}
+	return l;
+}
+
+item get_first(list l){
+	if(!empty_list(l)){
+		return l->first->itm;
 	}
 	return NULLITEM;
 }
 
-void output_list(list l){
-	printf("Stampo lista\n");
-	while (!emptyList(l)) {
-		printf(" %d ", l->itm);
-		l = l->next;
-	}
-	printf("\n");
+int size_list(list l){
+	return l->size;
 }
 
-int sizeList(list l){
-	int i = 0;
-	while(!emptyList(l)){
-		i++;
-		l = l->next;
+int pos_item(list l, item itm){
+	int pos = 0;
+	struct node *tmp = l->first;
+	while (tmp != NULL){
+		if (eq(itm,tmp->itm)){
+			return pos;
+		} else {
+			tmp = tmp->next;
+			pos++;
+		}
 	}
-	return i;
+	return -1;
+}
+
+item get_item(list l, int p){
+	if(l->size == 0 || p >= l->size)
+		return NULLITEM;
+	int pos = 0;
+	struct node *tmp = l->first;
+	while (tmp != NULL){
+		if (pos == p){
+			return tmp->itm;
+		} else {
+			tmp = tmp->next;
+			pos++;
+		}
+	}
+}
+
+list reverse_list(list l){
+	list reverse = new_list();
+	struct node *n = l->first;
+	while (n != NULL){
+		cons_list(n->itm, reverse);
+		n = n->next;
+	}
+	return reverse;
+}
+
+void output_list(list l){
+	struct node *tmp = l->first;
+	while (tmp != NULL){
+		output_item(tmp->itm);
+		tmp = tmp->next;
+	}
 }
