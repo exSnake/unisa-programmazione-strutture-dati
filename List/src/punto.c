@@ -40,6 +40,15 @@ float distanza(punto p1, punto p2){
 	return sqrt(dx*dx + dy*dy);
 }
 
-void print_punto(punto p){
+punto somma(punto p1, punto p2){
+	return crea_punto((p1->x + p2->x), (p1->y + p2->y));
+}
+
+void to_string(punto p){
 	printf("Punto(%.2f,%.2f)\n", p->x, p->y);
+}
+
+int equals(punto p1, punto p2){
+	return (ascissa(p1) == ascissa(p2) &&
+			ordinata(p1) == ordinata(p2));
 }

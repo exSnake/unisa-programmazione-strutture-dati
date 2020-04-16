@@ -52,15 +52,15 @@ int empty_list(list l);
 int cons_list(item val, list l);
 
 /**
- *	tailList: Accetta in ingresso una lista e restituisce una nuova lista a partire dalla coda della prima
+ *	tailList: Accetta in ingresso una lista e sposta il puntatore in avanti di un nodo
  *	Sintattica:
- *		tailList(list) -> list
+ *		tailList(list)
  *	Semantica:
- *		tailList(l) -> l1
- *			Pre: Accetta in ingresso una lista l non nulla e con piu di 1 elemento
- *			Post: Se l = <a1,a2,a3,...,an> restituisce l1 = <a2,a3,...,an>
+ *		tailList(l)
+ *			Pre: Accetta in ingresso una lista l non vuota
+ *			Post: Se l = <a1,a2,a3,...,an> dopo l = <a2,a3,...,an>
  */
-list tail_list(list l);
+void tail_list(list l);
 
 /**
  *	getFirst: Restituisce il primo elemento della lista
@@ -124,6 +124,28 @@ list reverse_list(list l);
  */
 void output_list(list l);
 
+/**
+ * clone_list: crea un clone della lista passata in ingresso e la restituisce
+ * Sintattica:
+ *     output_list(list) -> list
+ * Semantica:
+ *     output_list(l) -> l
+ *            Post: se l = <a1,a2,...,an> l1 = <b1,b2,...,bn> dove a1 == b1, a2 == b2, ... , an == bn
+ */
 list clone_list(list l);
+
+/**
+ * delete_item: accetta in ingresso una lista e la posizione dell'item da eliminare e lo elimina
+ * Sintattica:
+ *     delete_item(list,int) -> boolean
+ * Semantica:
+ *     delete_item(l, pos) -> found
+ *            Pre: pos < size_list e pos >= 0
+ *            Post: Se l = <a1,a2,a3...,an> e pos = 1 allora l = <a1,a3...,an> e found = 1 (true)
+ *                   se 0 > pos > n found = 0 (false) 
+ */
+int delete_item(list l, int pos);
+
+int insert_item(list l, int pos, item val);
 
 #endif /* LIST_H_ */

@@ -50,5 +50,8 @@ float ordinata(punto p);
  */
 float distanza(punto p1, punto p2);
 
-void print_punto(punto p);
+punto somma(punto p1, punto p2);
 
+int equals(punto p1, punto p2);
+
+void to_string(punto p);

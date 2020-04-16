@@ -8,8 +8,7 @@
  */
 
 int eq(item x, item y){
-	return (ascissa(x) == ascissa(y) && 
-			ordinata(x) == ordinata(y));
+	return (equals(x,y));
 }
 
 item new_item(float x, float y){
@@ -22,5 +21,5 @@ void input_item(item *x){
 }
 
 void output_item(item x){
-	print_punto(x);
+	to_string(x);
 }
