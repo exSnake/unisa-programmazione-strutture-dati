@@ -172,7 +172,7 @@ void sum_specular_items(list l){
 	}
 	for (int i = 0; i < ( size_list(l)/2 ); i++)
 	{
-		list tmp = clone_list(l);
+		list tmp = clone_list(l); //(fare secondo clone reverse e scorrere una volta fino a meta)
 		int pos = 0;
 		while (!empty_list(tmp))
 		{
@@ -182,7 +182,7 @@ void sum_specular_items(list l){
 			if (pos == (size_list(l) - p - 1)){
 				itm_2 = get_first(tmp);
 			}
-			tail_list(tmp);
+			tail_list(tmp); //l1<a1,a2,...an> <a2,...,an>
 			pos++;
 		}
 		item sum = somma(itm_1,itm_2);
