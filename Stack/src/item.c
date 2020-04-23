@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "item.h"
+
 /*
  * item.c
  *
@@ -11,13 +12,8 @@ int eq(item x, item y){
 	return (equals(x,y));
 }
 
-item new_item(float x, float y){
-	return crea_punto(x,y);
-}
-
-void input_item(item *x){
-	item p = crea_punto_stdio();
-	x = &p;
+item input_item(){
+	return create_stdio();
 }
 
 void output_item(item x){

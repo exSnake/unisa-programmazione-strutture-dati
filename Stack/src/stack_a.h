@@ -40,7 +40,7 @@ int push(stack s, item itm);
  *      Post: Se s = <a1,a2,...,an>, i = true, s' = <a2,...,an>
  *          Se s = nil, i = false
  */
-int pop(stack s); 
+int pop(stack s);
 
 /**
  * Sintattica
@@ -52,3 +52,27 @@ int pop(stack s);
  */
 item top(stack s);
 
+/**
+ * Sintattica:
+ *    clone_stack(stack) -> stack
+ * Semantica:
+ *    clone_stack(s) -> clone
+ *       Post: s = <a1,a2,...,an> -> clone = <a1,a2,...,an>
+ */
+stack clone_stack(stack s);
+
+/**
+ * Sintattica:
+ *    reverse_stack(stack) -> stack
+ * Semantica:
+ *    reverse_stack(s) -> reverse
+ *       Post: s = <a1,a2,...,an> -> reverse = <an,...,a2,a1>
+ */
+stack reverse_stack(stack s);
+
+/**
+ * 
+ */
+stack merge_stack(stack s1, stack s2);
+
+void output_stack(stack s);
